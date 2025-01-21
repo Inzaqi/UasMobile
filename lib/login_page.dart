@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'profile_page.dart';
+import 'profile_menu.dart';
 import 'register.dart';
 import 'forgot_password_page.dart';
 
@@ -38,7 +38,7 @@ class LoginPage extends StatelessWidget {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => ProfilePage(email: email, token: token),
+            builder: (context) => ProfileMenu(token: token, email: email),
           ),
         );
       } else {
