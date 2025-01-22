@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'login_page.dart';
-
+import 'package:http/http.dart' as http;
+import 'profile_menu.dart';
 
 class ProfilePage extends StatefulWidget {
   final String token;
+  final String email;
 
-  ProfilePage({required this.token, required String email});
+  ProfilePage({required this.token, required this.email});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -23,7 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
     fetchUserProfile();
   }
 
-  Future<void> fetchUserProfile() async {
+    Future<void> fetchUserProfile() async {
     final url = Uri.parse("http://127.0.0.1:8000/user-profile/");
 
     try {
@@ -70,72 +70,92 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-    onWillPop: () async {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage()), // Halaman login
-        (route) => false, // Menghapus semua rute sebelumnya
-      );
-      return false; // Cegah aksi back default
-    },
-
-    child: Scaffold(
-      backgroundColor: Color(0xFF1E1F47),
-      appBar: AppBar(
-        title: Text("Profile", style: TextStyle(color: Colors.white),),
-        backgroundColor: Color(0xFF1E1F47),
-        iconTheme: IconThemeData(color: Colors.white),
-      ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage("images/sleepy2.png"),
-                  ),
-                  SizedBox(height: 16),
-                  buildInfoTile("Nama", userData["name"], Icons.person),
-                  buildInfoTile("Email", userData["email"], Icons.email),
-                  buildInfoTile("Gender", userData["gender"] == 0 ? "Female" : "Male", Icons.transgender),
-                  buildInfoTile("Date of birth", userData["date_of_birth"], Icons.calendar_today),
-                  buildInfoTile("Height", "${userData["height"]} Cm", Icons.height),
-                  buildInfoTile("Weight", "${userData["weight"]} Kg", Icons.monitor_weight),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF48C9B0),
-                      minimumSize: Size(double.infinity, 50),
-                    ),
-                    child: Text("Save"),
-                  ),
-                ],
-              ),
+      onWillPop: () async {
+        // Navigasi kembali ke ProfileMenu
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfileMenu(
+              token: widget.token,
+              email: widget.email,
             ),
-      bottomNavigationBar: BottomNavigationBar(
+          ),
+        );
+        return false; // Cegah aksi back default
+      },
+      child: Scaffold(
         backgroundColor: Color(0xFF1E1F47),
-        selectedItemColor: Colors.teal,
-        unselectedItemColor: Colors.white,
-        currentIndex: 2, // Profile tab aktif
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Jurnal Tidur',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.nightlight_round),
-            label: 'Sleep',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+        appBar: AppBar(
+          title: Text("Profile", style: TextStyle(color: Colors.white)),
+          backgroundColor: Color(0xFF1E1F47),
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage("images/sleepy2.png"),
+                    ),
+                    SizedBox(height: 16),
+                    buildInfoTile("Nama", userData["name"], Icons.person),
+                    buildInfoTile("Email", userData["email"], Icons.email),
+                    buildInfoTile(
+                      "Gender",
+                      userData["gender"] == 0 ? "Female" : "Male",
+                      Icons.transgender,
+                    ),
+                    buildInfoTile(
+                      "Date of birth",
+                      userData["date_of_birth"],
+                      Icons.calendar_today,
+                    ),
+                    buildInfoTile(
+                      "Height",
+                      "${userData["height"]} Cm",
+                      Icons.height,
+                    ),
+                    buildInfoTile(
+                      "Weight",
+                      "${userData["weight"]} Kg",
+                      Icons.monitor_weight,
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF48C9B0),
+                        minimumSize: Size(double.infinity, 50),
+                      ),
+                      child: Text("Save"),
+                    ),
+                  ],
+                ),
+              ),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Color(0xFF1E1F47),
+          selectedItemColor: Colors.teal,
+          unselectedItemColor: Colors.white,
+          currentIndex: 2, // Profile tab aktif
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu_book),
+              label: 'Jurnal Tidur',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.nightlight_round),
+              label: 'Sleep',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
-    ),
     );
   }
 
@@ -161,3 +181,5 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+    
